@@ -11,16 +11,31 @@ import axios from 'axios'
 
 const API_URL = 'http://localhost:5000'
 
-export function BeauticianServicesComponent() {
-  const [services, setServices] = useState([
-    { id: 1, name: "Haircut", duration: 30, price: 30 },
-    { id: 2, name: "Manicure", duration: 45, price: 25 },
-    { id: 3, name: "Facial", duration: 60, price: 50 },
-  ])
+interface Service {
+  id: number;
+  name: string;
+  duration: number;
+  price: number;
+}
 
+export function BeauticianServicesComponent() {
+  const [services, setServices] = useState<Service[]>([])
   const [newService, setNewService] = useState({ name: '', duration: 0, price: 0 })
 
+  useEffect(() => { 
+    axios.get(`${API_URL}/api/service/me`, {
+      headers: {
+        'x-auth-token': localStorage.getItem('token')
+      }
+    }).then((response) => {
+      console.log(response.data)
+      setServices(response.data)
+    }
+    )
+  }, []);
+
   const handleAddService = () => {
+    if(newService.name == '') return;
     const user = localStorage.getItem('user');
     if (!user) {
       navigate('/')
@@ -29,7 +44,7 @@ export function BeauticianServicesComponent() {
 
     const beauticianEmail = JSON.parse(user).email;
 
-    axios.post(`${API_URL}/api/service`, {
+    axios.post(`${API_URL}/api/service/new`, {
       name: newService.name,
       duration: newService.duration,
       price: newService.price,

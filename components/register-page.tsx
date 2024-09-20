@@ -12,13 +12,13 @@ import axios from 'axios'
 const API_URL = 'http://localhost:5000'
 
 export function RegisterPageComponent() {
-  const [userType, setUserType] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  const handleUserTypeChange = (value: string) => {
-    setUserType(value);
+  const handleRoleChange = (value: string) => {
+    setRole(value);
   }
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -32,8 +32,8 @@ export function RegisterPageComponent() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log({ userType, name, email, password });
-    axios.post(`${API_URL}/api/auth/register`, { userType, name, email, password })
+    console.log({ role, name, email, password });
+    axios.post(`${API_URL}/api/auth/register`, { role, name, email, password })
       .then(response => {
         console.log(response.data.token);
         localStorage.setItem('token', response.data.token);
@@ -66,7 +66,7 @@ export function RegisterPageComponent() {
             </div>
             <div>
               <Label htmlFor="user-type" className="text-black">User Type</Label>
-              <Select onValueChange={handleUserTypeChange}>
+              <Select onValueChange={handleRoleChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select user type" />
                 </SelectTrigger>

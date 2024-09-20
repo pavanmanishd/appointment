@@ -3,8 +3,9 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { navigate } from "./actions/navigate"
 
-export function ClientHomeComponent() {
+export function ClientHomeComponent({ name }: { name: string }) {
   return (
     <div className="flex flex-col min-h-screen">
       <header className="px-4 lg:px-6 h-14 flex items-center">
@@ -27,7 +28,7 @@ export function ClientHomeComponent() {
       </header>
       <main className="flex-1 py-12 md:py-24 lg:py-32">
         <div className="container px-4 md:px-6">
-          <h1 className="text-3xl font-bold mb-6">Welcome, [Client Name]</h1>
+          <h1 className="text-3xl font-bold mb-6">Welcome, {name}!</h1>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Card>
               <CardHeader>
@@ -35,7 +36,7 @@ export function ClientHomeComponent() {
               </CardHeader>
               <CardContent>
                 <p>Browse services and book your next appointment.</p>
-                <Button className="mt-4">Book Now</Button>
+                <Button className="mt-4" onClick={() => navigate('/client/booking')}>Book Now</Button>
               </CardContent>
             </Card>
             <Card>
@@ -44,10 +45,10 @@ export function ClientHomeComponent() {
               </CardHeader>
               <CardContent>
                 <p>You have 2 upcoming appointments.</p>
-                <Button className="mt-4">View All</Button>
+                <Button className="mt-4" onClick={() => navigate('/client/appointments')}>View Appointments</Button>
               </CardContent>
             </Card>
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle>Special Offers</CardTitle>
               </CardHeader>
@@ -55,7 +56,7 @@ export function ClientHomeComponent() {
                 <p>Check out our latest deals and promotions.</p>
                 <Button className="mt-4">View Offers</Button>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         </div>
       </main>

@@ -27,7 +27,8 @@ export function LoginPageComponent() {
     axios.post(`${API_URL}/api/auth/login`, { email, password })
       .then(response => {
         console.log(response.data.token);
-        localStorage.setItem('token', response.data.token);
+        response.data.user.token = response.data.token;
+        localStorage.setItem('user', JSON.stringify(response.data.user));
         navigate('/');
       })
       .catch(error => {

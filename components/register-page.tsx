@@ -31,17 +31,18 @@ export function RegisterPageComponent() {
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log({ role, name, email, password });
-    axios.post(`${API_URL}/api/auth/register`, { role, name, email, password })
-      .then(response => {
-        console.log(response.data.token);
-        localStorage.setItem('token', response.data.token);
-        navigate('/');
-      })
-      .catch(error => {
-        console.error(error);
-      });
+      event.preventDefault();
+      console.log({ role, name, email, password });
+      axios.post(`${API_URL}/api/auth/register`, { role, name, email, password })
+        .then(response => {
+          console.log(response.data.token);
+          response.data.user.token = response.data.token;
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+          navigate('/');
+        })
+        .catch(error => {
+          console.error(error);
+        });
   }
 
   return (

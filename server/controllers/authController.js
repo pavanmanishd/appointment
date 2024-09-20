@@ -25,7 +25,7 @@ const register = async (req, res) => {
         const payload = { user: { id: user.id } };
         jwt.sign(payload, 'jwtSecret', { expiresIn: 360000 }, (err, token) => {
             if(err) throw err;
-            res.json({ token });
+            res.json({ token, user });
         });
     } catch (err) {
         console.error(err.message);
@@ -49,7 +49,7 @@ const login = async (req, res) => {
         const payload = { user: { id: user.id } };
         jwt.sign(payload, 'jwtSecret', { expiresIn: 360000 }, (err, token) => {
             if(err) throw err;
-            res.json({ token });
+            res.json({ token, user });
         });
     } catch (err) {
         console.error(err.message);

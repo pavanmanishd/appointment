@@ -1,25 +1,42 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { navigate } from './actions/navigate'
+import axios from 'axios'
+
+const API_URL = 'http://localhost:5000'
 
 export function BeauticianServicesComponent() {
   const [services, setServices] = useState([
-    { id: 1, name: "Haircut", duration: "30 min", price: "$30" },
-    { id: 2, name: "Manicure", duration: "45 min", price: "$25" },
-    { id: 3, name: "Facial", duration: "60 min", price: "$50" },
+    { id: 1, name: "Haircut", duration: 30, price: 30 },
+    { id: 2, name: "Manicure", duration: 45, price: 25 },
+    { id: 3, name: "Facial", duration: 60, price: 50 },
   ])
 
-  const [newService, setNewService] = useState({ name: '', duration: '', price: '' })
+  const [newService, setNewService] = useState({ name: '', duration: 0, price: 0 })
 
   const handleAddService = () => {
+    const user = localStorage.getItem('user');
+    if (!user) {
+      navigate('/')
+      return
+    }
+
+    const beauticianEmail = JSON.parse(user).email;
+
+    axios.post(`${API_URL}/api/service`, {
+      name: newService.name,
+      duration: newService.duration,
+      price: newService.price,
+      beauticianEmail
+    })
     setServices([...services, { id: services.length + 1, ...newService }])
-    setNewService({ name: '', duration: '', price: '' })
+    setNewService({ name: '', duration: 0, price: 0 })
   }
 
   return (
@@ -43,8 +60,8 @@ export function BeauticianServicesComponent() {
               {services.map((service) => (
                 <TableRow key={service.id}>
                   <TableCell>{service.name}</TableCell>
-                  <TableCell>{service.duration}</TableCell>
-                  <TableCell>{service.price}</TableCell>
+                  <TableCell>{service.duration} min</TableCell>
+                  <TableCell>${service.price}</TableCell>
                   <TableCell>
                     <Button variant="outline" size="sm">Edit</Button>
                     <Button variant="outline" size="sm" className="ml-2">Delete</Button>
@@ -74,7 +91,8 @@ export function BeauticianServicesComponent() {
               <Input
                 id="duration"
                 value={newService.duration}
-                onChange={(e) => setNewService({ ...newService, duration: e.target.value })}
+                onChange={(e) => setNewService({ ...newService, duration: Number(e.target.value) })}
+                type='number'
               />
             </div>
             <div>
@@ -82,7 +100,8 @@ export function BeauticianServicesComponent() {
               <Input
                 id="price"
                 value={newService.price}
-                onChange={(e) => setNewService({ ...newService, price: e.target.value })}
+                onChange={(e) => setNewService({ ...newService, price: Number(e.target.value) })}
+                type='number'
               />
             </div>
             <Button onClick={handleAddService}>Add Service</Button>

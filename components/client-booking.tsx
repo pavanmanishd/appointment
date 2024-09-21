@@ -22,6 +22,23 @@ export function ClientBookingComponent() {
   const [services, setServices] = useState<Service[]>([])
   const [selectedService, setSelectedService] = useState<Service | undefined>()
   const [selectedTime, setSelectedTime] = useState<string>("")
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([])
+
+  useEffect(() => {
+    if (!selectedService) {
+      return
+    }
+    axios.post(`${API_URL}/api/appointment/available`, {
+      serviceId: selectedService.id,
+      date: selectedDate?.toDateString()
+    })
+      .then((response) => {
+        setAvailableTimeSlots(response.data)
+      })
+      .catch((error) => {
+        console.error('Error fetching available time slots:', error)
+      })
+  }, [selectedService, selectedDate])
 
   useEffect(() => {
     axios.get(`${API_URL}/api/service/all`)
@@ -63,13 +80,9 @@ export function ClientBookingComponent() {
     const user = JSON.parse(localStorage.getItem('user') || '{}')
     const token = user.token;
 
-    // ${API_URL}/api/appointment/new
-    // const { serviceId, beauticianId, date, time } = req.body;
-    // const token = req.header('x-auth-token');
-
     axios.post(`${API_URL}/api/appointment/new`, {
       serviceId: selectedService.id,
-      date: selectedDate,
+      date: selectedDate.toDateString(),
       time: selectedTime,
       beauticianId: selectedService.beautician
     }, {
@@ -83,6 +96,10 @@ export function ClientBookingComponent() {
       .catch((error) => {
         console.error('Error booking appointment:', error)
       })
+  }
+
+  const isInAvailableTimeSlots = (time: string) => {
+    return availableTimeSlots.includes(time)
   }
 
   return (
@@ -150,6 +167,7 @@ export function ClientBookingComponent() {
                       checked={selectedTime === slot}
                       onChange={handleTimeChange}
                       className="h-5 w-5"
+                      disabled={!isInAvailableTimeSlots(slot)}
                     />
                     <span className="ml-2">{slot}</span>
                   </label>

@@ -14,6 +14,7 @@ interface Service {
   name: string;
   duration: number;
   price: number;
+  beautician: string;
 }
 
 export function ClientBookingComponent() {
@@ -29,7 +30,8 @@ export function ClientBookingComponent() {
           id: service._id,
           name: service.name,
           duration: service.duration,
-          price: service.price
+          price: service.price,
+          beautician: service.beautician
         }))
         setServices(services)
       })
@@ -51,6 +53,36 @@ export function ClientBookingComponent() {
 
   const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedTime(event.target.value)
+  }
+
+  const handleBooking = () => {
+    if (!selectedService || !selectedDate || !selectedTime) {
+      return
+    }
+
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
+    const token = user.token;
+
+    // ${API_URL}/api/appointment/new
+    // const { serviceId, beauticianId, date, time } = req.body;
+    // const token = req.header('x-auth-token');
+
+    axios.post(`${API_URL}/api/appointment/new`, {
+      serviceId: selectedService.id,
+      date: selectedDate,
+      time: selectedTime,
+      beauticianId: selectedService.beautician
+    }, {
+      headers: {
+        'x-auth-token': token
+      }
+    })
+      .then((response) => {
+        console.log('Appointment booked successfully:', response.data)
+      })
+      .catch((error) => {
+        console.error('Error booking appointment:', error)
+      })
   }
 
   return (
@@ -132,7 +164,7 @@ export function ClientBookingComponent() {
       <div className="mt-8">
         <Dialog>
           <DialogTrigger asChild>
-            <Button disabled={!selectedService || !selectedDate || !selectedTime}>
+            <Button disabled={!selectedService || !selectedDate || !selectedTime} onClick={handleBooking}>
               Confirm Booking
             </Button>
           </DialogTrigger>

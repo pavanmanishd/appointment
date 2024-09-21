@@ -23,15 +23,18 @@ export function BeauticianServicesComponent() {
   const [newService, setNewService] = useState({ name: '', duration: 0, price: 0 })
 
   useEffect(() => { 
-    axios.get(`${API_URL}/api/service/me`, {
-      headers: {
-        'x-auth-token': localStorage.getItem('token')
-      }
-    }).then((response) => {
-      console.log(response.data)
-      setServices(response.data)
+    const user = localStorage.getItem('user');
+    if(user){
+      axios.get(`${API_URL}/api/service/me`, {
+        headers: {
+          'x-auth-token': JSON.parse(user).token
+        }
+        }).then((response) => {
+          console.log(response.data)
+          setServices(response.data)
+        }
+      )
     }
-    )
   }, []);
 
   const handleAddService = () => {

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useState, useEffect } from "react"
 import axios from "axios"
+import { Navbar } from "./navbar"
 
 const API_URL = "http://localhost:5000"
 
@@ -37,40 +38,43 @@ export function ClientAppointmentsComponent() {
   }, [])
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">My Appointments</h1>
-      <Card>
-        <CardHeader>
-          <CardTitle>Upcoming Appointments</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Time</TableHead>
-                <TableHead>Service</TableHead>
-                <TableHead>Beautician</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {appointments.map((appointment) => (
-                <TableRow key={appointment.id}>
-                  <TableCell>{new Date(appointment.date).toDateString()}</TableCell>
-                  <TableCell>{appointment.time}</TableCell>
-                  <TableCell>{appointment.service}</TableCell>
-                  <TableCell>{appointment.beautician}</TableCell>
-                  <TableCell>
-                    <Button variant="outline" size="sm">Reschedule</Button>
-                    <Button variant="outline" size="sm" className="ml-2">Cancel</Button>
-                  </TableCell>
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold mb-6">My Appointments</h1>
+        <Card>
+          <CardHeader>
+            <CardTitle>Upcoming Appointments</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Time</TableHead>
+                  <TableHead>Service</TableHead>
+                  <TableHead>Beautician</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {appointments.map((appointment) => (
+                  <TableRow key={appointment.id}>
+                    <TableCell>{new Date(appointment.date).toDateString()}</TableCell>
+                    <TableCell>{appointment.time}</TableCell>
+                    <TableCell>{appointment.service}</TableCell>
+                    <TableCell>{appointment.beautician}</TableCell>
+                    <TableCell>
+                      <Button variant="outline" size="sm">Reschedule</Button>
+                      <Button variant="outline" size="sm" className="ml-2">Cancel</Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

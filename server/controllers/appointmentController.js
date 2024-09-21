@@ -71,11 +71,16 @@ const getAppointments = async (req, res) => {
             return res.json(formattedAppointments);
         } else if (user.role === 'beautician') {
             const appointments = await Appointment.find({ beautician: id }).populate('service client');
-            appointments.forEach(appointment => {
-                appointment.service = appointment.service.name;
-                appointment.client = appointment.client.name;
+            const formattedAppointments = appointments.map(appointment => {
+                return {
+                    id: appointment._id,
+                    date: appointment.date,
+                    time: appointment.time,
+                    service: appointment.service.name,
+                    client: appointment.client.name,
+                }
             });
-            return res.json(appointments);
+            return res.json(formattedAppointments);
         } else {
             return res.status(401).json({ msg: 'Unauthorized' });
         }

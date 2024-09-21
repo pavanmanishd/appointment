@@ -1,20 +1,36 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select } from "@/components/ui/select"
 import { Calendar } from "@/components/ui/calendar"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import axios from 'axios'
+
+const API_URL = 'http://localhost:5000'
+
+interface Service {
+  id: number;
+  name: string;
+  duration: number;
+  price: number;
+}
 
 export function ClientBookingComponent() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
+  const [services, setServices] = useState<Service[]>([])
 
-  const services = [
-    { id: 1, name: "Haircut", duration: "30 min", price: "$30" },
-    { id: 2, name: "Manicure", duration: "45 min", price: "$25" },
-    { id: 3, name: "Facial", duration: "60 min", price: "$50" },
-  ]
+  useEffect(() => {
+    axios.get(`${API_URL}/api/service/all`)
+      .then((response) => {
+        setServices(response.data)
+      })
+      .catch((error) => {
+        console.error('Error fetching services:', error)
+      })
+  }, [])
+    
 
   const timeSlots = [
     "09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM",
@@ -34,7 +50,7 @@ export function ClientBookingComponent() {
               <option value="">Choose a service</option>
               {services.map((service) => (
                 <option key={service.id} value={service.id}>
-                  {service.name} - {service.duration} - {service.price}
+                  {service.name} - {service.duration} min - ${service.price}
                 </option>
               ))}
             </Select>
